@@ -1,0 +1,11 @@
+code == 200
+/ success
+
+code == 300
+/ error not found param to send to api
+
+code == 500
+/ error not found to bb or to api
+
+code == 401
+/ error not fetch data to bb
