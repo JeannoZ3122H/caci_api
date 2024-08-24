@@ -18,6 +18,7 @@ use App\Http\Controllers\NewsLettersController;
 use App\Http\Controllers\AdminAccountController;
 use App\Http\Controllers\OrganisationsController;
 use App\Http\Controllers\TermsAndPolicyController;
+use App\Http\Controllers\TypesServicesController;
 
 Route::group([
     'prefix' => 'v1.0'
@@ -67,6 +68,9 @@ Route::group([
     Route::get('/get__frontent__content_partner', [FrontendController::class, 'content_partner']);
     // --*$*__*$*-- 💫🍎 START RESSOURCES ROUTES 💫🍎--*$*__*$*-- //
     Route::get('/get__frontent__content_publication', [FrontendController::class, 'content_publication']);
+    // --*$*__*$*-- 💫🍎 START TYPES SERVICES ROUTES 💫🍎--*$*__*$*-- //
+    Route::get('/get__frontent__list__type__services', [FrontendController::class, 'get__list__type__service']);
+    Route::get('/get__frontent__current__type__service__by__code/{code}', [FrontendController::class, 'get__current__type__service']);
 
     // 💫🍎 END FRONTENT ROUTES 💫🍎--*$*__*$*-- --*$*__*$*-- //
 });
@@ -209,6 +213,14 @@ Route::group([
     Route::post('/update_current_agenda/{slg}', [ActualitesController::class, 'update_agenda']);
     Route::delete('/delete_current_agenda/{slg}', [ActualitesController::class, 'delete_agenda']);
     // 💫🍎 END AGENDAS ROUTES 💫🍎--*$*__*$*-- --*$*__*$*-- //
+
+
+    // --*$*__*$*-- 💫🍎 START TYPE SERVICES ROUTES 💫🍎--*$*__*$*-- //
+    Route::get('/get_list_type_services', [TypesServicesController::class, 'index']);
+    Route::post('/add_new_type_service', [TypesServicesController::class, 'store']);
+    Route::put('/update_current_type_service/{slg}', [TypesServicesController::class, 'update']);
+    Route::delete('/delete_current_type_service/{slg}', [TypesServicesController::class, 'delete']);
+    // 💫🍎 END TYPE SERVICES ROUTES 💫🍎--*$*__*$*-- --*$*__*$*-- //
 
 
 });

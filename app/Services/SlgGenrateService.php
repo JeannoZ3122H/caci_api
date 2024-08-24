@@ -26,4 +26,11 @@ class SlgGenrateService
         ), 3, $lenght);
         return $keys;
     }
+    public static function codeGenerate(){
+        $lenght= 3;
+        $keys = substr(str_shuffle(
+            str_repeat($x = '1234567890', ceil($lenght / strlen($x)))
+        ), 3, $lenght);
+        return "SERV-".$keys;
+    }
 }

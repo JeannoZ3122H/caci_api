@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mediations_models', function (Blueprint $table) {
+        Schema::create('types_services_models', function (Blueprint $table) {
             $table->id();
+            $table->integer('author_id')->unsigned();
+            $table->string('type_service')->nullable();
+            $table->string('type_service_code')->nullable();
+            $table->text('slug')->nullable();
             $table->timestamps();
         });
     }
@@ -22,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mediations_models');
+        Schema::dropIfExists('types_services_models');
     }
 };

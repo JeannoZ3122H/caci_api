@@ -13,6 +13,7 @@ use App\Services\MessageService;
 use App\Models\HistoriquesModels;
 use App\Models\TestimonialsModel;
 use App\Models\PublicarionsModels;
+use App\Models\TypesServicesModel;
 use App\Models\OrganisationsModels;
 use App\Services\SlgGenrateService;
 use App\Services\UploadFileService;
@@ -285,6 +286,46 @@ class FrontendController extends Controller
         }
     }
 // ======= =========== PUBLICATIONS DETAILS =========== ======= //
+// ======= END =========== ======= //
+
+
+// ======= START =========== ======= //
+// ======= =========== TYPES SERVICES LIST =========== ======= //
+    public function get__list__type__service(){
+        try {
+            $list_types_services = TypesServicesModel::all();
+            if($list_types_services != null){return $list_types_services;}else{return $list_types_services = [];}
+        } catch (\Throwable $e) {
+            return response()->json(
+                [
+                    'status' => 'erreur',
+                    'code' => 500,
+                    'message' => $e->getMessage(),
+                ]
+            );
+        }
+    }
+    public function get__current__type__service($code){
+        try {
+            if(isset($code)):
+                $current__type__service = TypesServicesModel::Where('type_service_code', '=', $code)->first();
+                if($current__type__service != null){
+                    return $current__type__service;
+                }else{
+                    return null;
+                }
+            endif;
+        } catch (\Throwable $e) {
+            return response()->json(
+                [
+                    'status' => 'erreur',
+                    'code' => 500,
+                    'message' => $e->getMessage(),
+                ]
+            );
+        }
+    }
+// ======= =========== TYPES SERVICES LIST =========== ======= //
 // ======= END =========== ======= //
 
 
