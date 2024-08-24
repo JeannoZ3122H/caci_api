@@ -125,4 +125,23 @@ class UploadFileService
         }
         return $pathList;
     }
+
+    public static function uploadFileAny($request, $folder, $file_name, $input_name){
+        if($request->hasFile($input_name)):
+            $file = $request->file($input_name);
+            $extension = $file->getClientOriginalExtension();
+            $filename = $file_name.time().'.'.$extension;
+            if($filename):
+                $pulic_path = 'media/'.$folder.'/';
+                $file->move(public_path($pulic_path) , $filename);
+            else:
+                return "error";
+            endif;
+            $path = $pulic_path;
+            $image_url = URL::to('').'/'.$path.$filename;
+            return $image_url;
+        else:
+            return "is_not_file";
+        endif;
+    }
 }

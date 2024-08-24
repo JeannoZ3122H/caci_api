@@ -7,11 +7,16 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\TeamsController;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\MissionsController;
+use App\Http\Controllers\PartnersController;
 use App\Http\Controllers\SlideUneController;
 use App\Http\Controllers\TypeEventController;
+use App\Http\Controllers\ActualitesController;
+use App\Http\Controllers\HistoriqueController;
+use App\Http\Controllers\RessourcesController;
 use App\Http\Controllers\NewsLettersController;
 use App\Http\Controllers\AdminAccountController;
-use App\Http\Controllers\PartnersController;
+use App\Http\Controllers\OrganisationsController;
 use App\Http\Controllers\TermsAndPolicyController;
 
 Route::group([
@@ -44,12 +49,26 @@ Route::group([
     'prefix' => 'v1.0',
     // 'middleware' => 'auth:api'
 ], function () {
+// --*$*__*$*-- 💫🍎 START FRONTENT ROUTES 💫🍎--*$*__*$*-- //
 
     // --*$*__*$*-- 💫🍎 START NEWSLETTERS ROUTES 💫🍎--*$*__*$*-- //
     Route::post('/add_new_newsletter', [NewsLettersController::class, 'store']);
+    // --*$*__*$*-- 💫🍎 START WELCOME ROUTES 💫🍎--*$*__*$*-- //
     Route::get('/get__frontend__all_data', [FrontendController::class, 'get_frontent_data']);
-    // 💫🍎 END NEWSLETTERS ROUTES 💫🍎--*$*__*$*-- --*$*__*$*-- //
+    // --*$*__*$*-- 💫🍎 START COMMENTS ROUTES 💫🍎--*$*__*$*-- //
+    Route::post('/store__frontent__comments', [FrontendController::class, 'store__comments']);
+    // --*$*__*$*-- 💫🍎 START EVENTS ROUTES 💫🍎--*$*__*$*-- //
+    Route::get('/get__frontend__current__event__details/{title}', [FrontendController::class, 'current__event__details']);
+    Route::get('/get__frontent__list__events', [FrontendController::class, 'get__list__events']);
+    // --*$*__*$*-- 💫🍎 START ABOUT ROUTES 💫🍎--*$*__*$*-- //
+    Route::get('/get__frontent__content_historique', [FrontendController::class, 'content_historique']);
+    Route::get('/get__frontent__content_organisation', [FrontendController::class, 'content_organisation']);
+    Route::get('/get__frontent__content_mission', [FrontendController::class, 'content_mission']);
+    Route::get('/get__frontent__content_partner', [FrontendController::class, 'content_partner']);
+    // --*$*__*$*-- 💫🍎 START RESSOURCES ROUTES 💫🍎--*$*__*$*-- //
+    Route::get('/get__frontent__content_publication', [FrontendController::class, 'content_publication']);
 
+    // 💫🍎 END FRONTENT ROUTES 💫🍎--*$*__*$*-- --*$*__*$*-- //
 });
 //💫🍎 --*$*__*$*-- 💫🍎 FRONTEND 💫🍎--*$*__*$*--💫🍎 //
 //💫🍎--*$*__*$*--💫🍎 END 💫🍎 //
@@ -108,7 +127,7 @@ Route::group([
     // // --*$*__*$*-- 💫🍎 START EVENT ROUTES 💫🍎--*$*__*$*-- //
         Route::get('/get_list_events', [EventController::class, 'index']);
         Route::post('/add_new_event', [EventController::class, 'store']);
-        Route::put('/update_current_event/{slg}', [EventController::class, 'update']);
+        Route::post('/update_current_event/{slg}', [EventController::class, 'update']);
         Route::delete('/delete_current_event/{slg}', [EventController::class, 'delete']);
     // // 💫🍎 END EVENT ROUTES 💫🍎--*$*__*$*-- --*$*__*$*-- //
 
@@ -134,6 +153,63 @@ Route::group([
         Route::put('/update_current_terms_and_policy/{slg}', [TermsAndPolicyController::class, 'update']);
         Route::delete('/delete_current_terms_and_policy/{slg}', [TermsAndPolicyController::class, 'delete']);
     // // 💫🍎 END PARTNERS ROUTES 💫🍎--*$*__*$*-- --*$*__*$*-- //
+
+
+    // --*$*__*$*-- 💫🍎 START MISSIONS ROUTES 💫🍎--*$*__*$*-- //
+    Route::get('/get_list_missions', [MissionsController::class, 'index']);
+    Route::post('/add_new_mission', [MissionsController::class, 'store']);
+    Route::post('/update_current_mission/{slg}', [MissionsController::class, 'update']);
+    Route::delete('/delete_current_mission/{slg}', [MissionsController::class, 'delete']);
+    // 💫🍎 END MISSIONS ROUTES 💫🍎--*$*__*$*-- --*$*__*$*-- //
+
+
+    // --*$*__*$*-- 💫🍎 START ORGANISATIONS ROUTES 💫🍎--*$*__*$*-- //
+    Route::get('/get_list_organisations', [OrganisationsController::class, 'index']);
+    Route::post('/add_new_organisation', [OrganisationsController::class, 'store']);
+    Route::post('/update_current_organisation/{slg}', [OrganisationsController::class, 'update']);
+    Route::delete('/delete_current_organisation/{slg}', [OrganisationsController::class, 'delete']);
+    // 💫🍎 END ORGANISATIONS ROUTES 💫🍎--*$*__*$*-- --*$*__*$*-- //
+
+
+    // --*$*__*$*-- 💫🍎 START HISTORIQUES ROUTES 💫🍎--*$*__*$*-- //
+    Route::get('/get_list_historiques', [HistoriqueController::class, 'index']);
+    Route::post('/add_new_historique', [HistoriqueController::class, 'store']);
+    Route::post('/update_current_historique/{slg}', [HistoriqueController::class, 'update']);
+    Route::delete('/delete_current_historique/{slg}', [HistoriqueController::class, 'delete']);
+    // 💫🍎 END HISTORIQUES ROUTES 💫🍎--*$*__*$*-- --*$*__*$*-- //
+
+
+    // --*$*__*$*-- 💫🍎 START TYPES PUBLICATIONS ROUTES 💫🍎--*$*__*$*-- //
+    Route::get('/get_list_type_publications', [RessourcesController::class, 'index_type_publication']);
+    Route::post('/add_new_type_publication', [RessourcesController::class, 'store_type_publication']);
+    Route::post('/update_current_type_publication/{slg}', [RessourcesController::class, 'update_type_publication']);
+    Route::delete('/delete_current_type_publication/{slg}', [RessourcesController::class, 'delete_type_publication']);
+    // 💫🍎 END TYPES PUBLICATIONS ROUTES 💫🍎--*$*__*$*-- --*$*__*$*-- //
+
+
+    // --*$*__*$*-- 💫🍎 START PUBLICATIONS ROUTES 💫🍎--*$*__*$*-- //
+    Route::get('/get_list_publications', [RessourcesController::class, 'index_publication']);
+    Route::post('/add_new_publication', [RessourcesController::class, 'store_publication']);
+    Route::post('/update_current_publication/{slg}', [RessourcesController::class, 'update_publication']);
+    Route::delete('/delete_current_publication/{slg}', [RessourcesController::class, 'delete_publication']);
+    // 💫🍎 END PUBLICATIONS ROUTES 💫🍎--*$*__*$*-- --*$*__*$*-- //
+
+
+    // --*$*__*$*-- 💫🍎 START LIENS UTILES ROUTES 💫🍎--*$*__*$*-- //
+    Route::get('/get_list_lien_utiles', [RessourcesController::class, 'index_lien_utile']);
+    Route::post('/add_new_lien_utile', [RessourcesController::class, 'store_lien_utile']);
+    Route::post('/update_current_lien_utile/{slg}', [RessourcesController::class, 'update_lien_utile']);
+    Route::delete('/delete_current_lien_utile/{slg}', [RessourcesController::class, 'delete_lien_utile']);
+    // 💫🍎 END LIENS UTILES ROUTES 💫🍎--*$*__*$*-- --*$*__*$*-- //
+
+
+    // --*$*__*$*-- 💫🍎 START AGENDAS ROUTES 💫🍎--*$*__*$*-- //
+    Route::get('/get_list_agendas', [ActualitesController::class, 'index_agenda']);
+    Route::post('/add_new_agenda', [ActualitesController::class, 'store_agenda']);
+    Route::post('/update_current_agenda/{slg}', [ActualitesController::class, 'update_agenda']);
+    Route::delete('/delete_current_agenda/{slg}', [ActualitesController::class, 'delete_agenda']);
+    // 💫🍎 END AGENDAS ROUTES 💫🍎--*$*__*$*-- --*$*__*$*-- //
+
 
 });
 //💫🍎 --*$*__*$*-- 💫🍎 BACKEND 💫🍎--*$*__*$*--💫🍎 //

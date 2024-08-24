@@ -64,15 +64,6 @@ class PartnersController extends Controller
                     ]
                 );
             endif;
-            if(empty($request->url_site)):
-                return response()->json(
-                    [
-                        'code' => 302,
-                        'status' => 'Erreur',
-                        'message' => MessageService::code302('url')
-                    ]
-                );
-            endif;
 
             $add = new PartnersModel();
             $add->url_site = $request->url_site;
@@ -122,21 +113,12 @@ class PartnersController extends Controller
                         ]
                     );
                 endif;
-                if(empty($request->url_site)):
-                    return response()->json(
-                        [
-                            'code' => 302,
-                            'status' => 'Erreur',
-                            'message' => MessageService::code302('url')
-                        ]
-                    );
-                endif;
 
                 $data = PartnersModel::Where('slug', '=', $slg)->first();
                 if($data){
                     $data->url_site = $request->url_site;
                     $data->description = $request->description;
-                    if(!empty($request->partner)):
+                    if($request->partner != 'undefined'):
                         $data->partner = UploadFileService::uploadFile($request, 'partner', 'partner');
                     endif;
 

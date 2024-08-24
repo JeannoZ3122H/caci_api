@@ -152,8 +152,9 @@ class BannerController extends Controller
                     $data->type_event_id = $request->type_event_id;
                     $data->description = $request->description;
                     $data->title = $request->title;
-                    $data->event_img = UploadFileService::uploadFile($request->event_img, 'event_img', 'banner');
-
+                    if($request->event_img != 'undefined'):
+                        $data->event_img = UploadFileService::uploadFile($request->event_img, 'event_img', 'banner');
+                    endif;
                     if($data->save()){
                         return response()->json(
                             [

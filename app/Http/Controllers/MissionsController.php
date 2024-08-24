@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EventModel;
 use Illuminate\Http\Request;
+use App\Models\MissionsModels;
 use App\Services\MessageService;
 use App\Services\SlgGenrateService;
 use App\Services\UploadFileService;
 
-class EventController extends Controller
+class MissionsController extends Controller
 {
 
     protected $middleware = [
@@ -22,12 +22,10 @@ class EventController extends Controller
 
     public function index(){
         try {
-            $events = EventModel::OrderByDesc('event_models.id')
-            ->join('type_event_models', 'event_models.type_event_id', '=', 'type_event_models.id')
-            ->select('type_event_models.type_event', 'event_models.*')
-            ->get();
-            if($events != null){return $events;}
-            else{return $events = [];}
+            $list = MissionsModels::Join('admin_account_models', 'missions_models.author_id', '=', 'admin_account_models.id')
+            ->select('admin_account_models.*', 'admin_account_models.id as user_id', 'missions_models.*')->get();
+            if($list != null){return $list;}
+            else{return $list = [];}
         } catch (\Throwable $e) {
             return response()->json(
                 [
@@ -41,21 +39,13 @@ class EventController extends Controller
 
     public function store(Request $request){
         try {
-            if(empty($request->type_event_id)):
+            // return $request->all();
+            if(empty($request->author_id)):
                 return response()->json(
                     [
                         'code' => 302,
                         'status' => 'Erreur',
-                        'message' => MessageService::code302('type d\'évènement')
-                    ]
-                );
-            endif;
-            if(empty($request->title)):
-                return response()->json(
-                    [
-                        'code' => 302,
-                        'status' => 'Erreur',
-                        'message' => MessageService::code302('titre de l\'article')
+                        'message' => MessageService::code302('auteur')
                     ]
                 );
             endif;
@@ -68,52 +58,32 @@ class EventController extends Controller
                     ]
                 );
             endif;
-            if(empty($request->event_img_0)):
-                return response()->json(
-                    [
-                        'code' => 302,
-                        'status' => 'Erreur',
-                        'message' => MessageService::code302('illustration(image)')
-                    ]
-                );
-            endif;
-            if(empty($request->author_id)):
-                return response()->json(
-                    [
-                        'code' => 302,
-                        'status' => 'Erreur',
-                        'message' => MessageService::code302('auteur')
-                    ]
-                );
-            endif;
 
-            $add = new EventModel();
+            $add = new MissionsModels();
             $add->author_id = $request->author_id;
-            $add->type_event_id = $request->type_event_id;
-            $add->event_description = $request->description;
-            $add->event_title = $request->title;
-
-            if(!empty($request->event_img_0)):
-                $file = UploadFileService::uploadFileMultiple($request);
-                if($file == "error"):
-                    return response()->json(
-                        [
-                            'code' => 400,
-                            'status' => 'Erreur',
-                            'message' => MessageService::code400()
-                        ]
-                    );
-                else:
-                    $add->event_img = json_encode($file);
-                endif;
+            $add->title = $request->title;
+            $add->sub_title = $request->sub_title;
+            $add->description = $request->description;
+            if(!empty($request->illustration)):
+                $add->illustration = UploadFileService::uploadFileAny($request,'missions', 'mission_','illustration');
             endif;
             $add->slug = SlgGenrateService::slgGenerate();
+            // (object)
+            // return $add;
             if($add->save()){
                 return response()->json(
                     [
                         'status' => 'Succès',
                         'code' => 100,
                         'message' => MessageService::code100()
+                    ]
+                );
+            }else{
+                return response()->json(
+                    [
+                        'code' => 400,
+                        'status' => 'Erreur',
+                        'message' => MessageService::code400()
                     ]
                 );
             }
@@ -131,22 +101,13 @@ class EventController extends Controller
     public function update(Request $request, $slg){
         try {
             if(isset($slg)){
-
-                if(empty($request->type_event_id)):
+                // return $request->all();
+                if(empty($request->author_id)):
                     return response()->json(
                         [
                             'code' => 302,
                             'status' => 'Erreur',
-                            'message' => MessageService::code302('type d\'évènement')
-                        ]
-                    );
-                endif;
-                if(empty($request->title)):
-                    return response()->json(
-                        [
-                            'code' => 302,
-                            'status' => 'Erreur',
-                            'message' => MessageService::code302('titre de l\'article')
+                            'message' => MessageService::code302('auteur')
                         ]
                     );
                 endif;
@@ -159,47 +120,17 @@ class EventController extends Controller
                         ]
                     );
                 endif;
-                if(empty($request->event_img_0) && empty($request->old_files)):
-                    return response()->json(
-                        [
-                            'code' => 302,
-                            'status' => 'Erreur',
-                            'message' => MessageService::code302('illustration(image)')
-                        ]
-                    );
-                endif;
-                if(empty($request->author_id)):
-                    return response()->json(
-                        [
-                            'code' => 302,
-                            'status' => 'Erreur',
-                            'message' => MessageService::code302('auteur')
-                        ]
-                    );
-                endif;
 
-                $data = EventModel::Where('slug', '=', $slg)->first();
+                $data = MissionsModels::where('slug', '=', $slg)->first();
                 if($data){
-
+                    // return $data;
                     $data->author_id = $request->author_id;
-                    $data->type_event_id = $request->type_event_id;
-                    $data->event_description = $request->description;
-                    $data->event_title = $request->title;
-                    if(!empty($request->event_img_0)):
-                        $file = UploadFileService::uploadFileMultiple($request);
-                        if($file == "error"):
-                            return response()->json(
-                                [
-                                    'code' => 400,
-                                    'status' => 'Erreur',
-                                    'message' => MessageService::code400()
-                                ]
-                            );
-                        else:
-                            $data->event_img = json_encode($file);
-                        endif;
+                    $data->title = $request->title;
+                    $data->sub_title = $request->sub_title;
+                    $data->description = $request->description;
+                    if($request->illustration != 'undefined'):
+                        $data->illustration = UploadFileService::uploadFileAny($request,'missions', 'mission_','illustration');
                     endif;
-
                     if($data->save()){
                         return response()->json(
                             [
@@ -208,7 +139,15 @@ class EventController extends Controller
                                 'message' => MessageService::code200(),
                             ]
                         );
-                    };
+                    }else{
+                        return response()->json(
+                            [
+                                'status' => 'Erreur',
+                                'code' => 400,
+                                'message' => MessageService::code400(),
+                            ]
+                        );
+                    }
                 }else{
                     return response()->json(
                         [
@@ -249,7 +188,8 @@ class EventController extends Controller
                     ]
                 );
             endif;
-            $resp = EventModel::where('slug', '=', $slg)->delete();
+
+            $resp = MissionsModels::where('slug', '=', $slg)->delete();
             if($resp){
                 return response()->json(
                     [
@@ -267,6 +207,7 @@ class EventController extends Controller
                     ]
                 );
             }
+
         } catch (\Throwable $e) {
             return response()->json(
                 [

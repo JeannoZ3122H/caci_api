@@ -303,8 +303,31 @@ class AuthController extends Controller
     {
         try {
             if(isset($id)){
-                $logout = DB::table('users')->where('user_id', '=', $id)->update(['status_connection' => 0]);
-                if($logout):
+                $logout = false;
+                $user = DB::table('users')->where('user_id', '=', $id)->first();
+                if($user->status_connection):
+                    $logout = DB::table('users')->where('user_id', '=', $id)
+                    ->update(['status_connection' => 0]);
+                    if($logout):
+                        Session::flush();
+                        Auth::logout();
+                        return response()->json(
+                            [
+                                'code' => 100,
+                                'status' => 'success',
+                                'message' => "Merci ! Vous vous êtes déconnecté"
+                            ]
+                        );
+                    else:
+                        return response()->json(
+                            [
+                                'code' => 000,
+                                'status' => "Attention",
+                                'message' => 'La déconnexion n\'a pas pu être effectuée 👺! Merci de réessayer d\'avance '
+                            ]
+                        );
+                    endif;
+                else:
                     Session::flush();
                     Auth::logout();
                     return response()->json(
@@ -312,14 +335,6 @@ class AuthController extends Controller
                             'code' => 100,
                             'status' => 'success',
                             'message' => "Merci ! Vous vous êtes déconnecté"
-                        ]
-                    );
-                else:
-                    return response()->json(
-                        [
-                            'code' => 000,
-                            'status' => "Attention",
-                            'message' => 'La déconnexion n\'a pas pu être effectuée 👺! Merci de réessayer d\'avance '
                         ]
                     );
                 endif;
